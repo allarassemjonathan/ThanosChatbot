@@ -9,7 +9,7 @@ intents = discord.Intents.default()
 intents.members = True
 
 rules = ["rule 0: no bad words here!", "rule 1: no stigmatization here!", "rule 2: no ad-hominem here!", 
-		"rule 3: no insult here", "rule 4: all the previous rules are valid and subject to adjustements!"]
+		"rule 3: no insult here", "rule 4: all the previous rules are valid and can be subjected to adjustements!"]
 
 insults_words = ["fuck","dick","f***","d***","pussy","p****","I don't give a"]
 
@@ -35,10 +35,6 @@ async def on_ready():
 @Client.event
 async def on_disconnect():
 	print("Thannos left")
-
-@Client.event
-async def on_member_join(member):
-	channel = get(member.guild.channels, name='')
 
 
 # $repeat command
@@ -72,9 +68,6 @@ async def totalMembers(ctx):
 	n = ctx.guild.member_count
 	await ctx.send(str(n))
 
-@Client.event
-async def on_member_join(member):
-	channel = get(member.guild.channels, name)
 
 # $ban command
 @Client.command()
@@ -109,6 +102,10 @@ async def server(ctx):
 	embed.add_field(name='Region', value=region, inline=True)
 	embed.add_field(name='Member Count', value=memberCount, inline=True)
 	await ctx.send(embed=embed)
+
+'''
+THE FOLLOWING RULES ARE FOR THE MANAGEMENT OF MUSIC LISTENNING
+'''
 
 # $play command
 @Client.command()
@@ -174,14 +171,35 @@ async def stop(ctx):
 	voice = discord.utils.get(Client.voice_clients, guild=ctx.guild)
 	voice.stop()
 
+'''
+THE FOLLOWING RULES ARE FOR THE MANAGEMENT OF USERS INTERACTIONS
+'''
+
 # $rule command
 @Client.command()
 async def rule(ctx, number):
+	embed = discord.Embed(name="rules", 
+		description="These rules must be followed by users ⚠️", 
+		inline=True,
+		color=discord.Color.red())
 	index = int(number)
 	if index < len(rules):
-		await ctx.send(rules[index])
+		embed.add_field(name="Rule " + str(index), value=rules[index], inline=True)
+		await ctx.send(embed=embed)
+	else:
+		embed.add_field(name="A little error...",value="Sorry there is no rule" + str(index), inline=True)
+		await ctx.send(embed=embed)
+
+# $allrules command
+@Client.command()
+async def allrules(ctx):
+	embed = discord.Embed(title="RULES OF THE GROUP", 
+		description="These rules must be followed for the well being of the group", 
+		inline=True,
+		color=discord.Color.red())
+	for i in rules:
+		embed.add_field(name="Rules to follow ⚠️", value=str(i), inline=True)
+	await ctx.send(embed=embed)
 
 
-
-
-Client.run(token)
+Client.run('NzkwODk0OTk2MDE0MzY2Nzcx.X-HQXQ.hooJ0YP0FLtegB6couCRbU7RMqI')
