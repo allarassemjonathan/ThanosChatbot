@@ -184,4 +184,4 @@ async def rule(ctx, number):
 
 
 
-Client.run('NzkwODk0OTk2MDE0MzY2Nzcx.X-HQXQ.OQs8aUADtSXQLL0zYs0oWjdiDKU')
+Client.run(token)
