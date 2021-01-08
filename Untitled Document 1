@@ -1,0 +1,33 @@
+  GMAIL
+  
+ SMTP Server (Outgoing Messages)  	smtp.gmail.com 	StartTLS 	587
+  
+  OUTLOOK
+  
+  SMTP Server (Outgoing Messages) 	smtp.live.com 	StartTLS 	587
+  
+  OFFICE365
+  
+  SMTP Server (Outgoing Messages) 	smtp.office365.com 	StartTLS 	587
+  
+  YAHOOMAIL
+  
+  SMTP Server (Outgoing Messages) 	smtp.mail.yahoo.com 	SSL 	465
+  
+  ORANGE
+  
+  SMTP Server (Outgoing Messages) 	smtp.orange.net 	  	25
+  
+  COMCAST
+  
+  SMTP Server (Outgoing Messages) 	smtp.comcast.net 	  	587
+  
+  MAIL
+  
+  SMTP Server (Outgoing Messages) 	smtp.mail.com 	SSL 	465
+  
+  
+  HOTMAIL
+  
+  SMTP Server (Outgoing Messages) 	smtp.live.com 	SSL 	465
+  

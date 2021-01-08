@@ -1,6 +1,9 @@
 import youtube_dl
 import discord
 import os
+import smtplib
+import email
+from email.message import EmailMessage
 from discord.ext import commands
 from discord.ext.commands import Cog
 from discord.utils import get
@@ -16,6 +19,28 @@ insults_words = ["fuck","dick","f***","d***","pussy","p****","I don't give a"]
 bad_words = ["you dumb", "you mean", "you a stupid guy", "you are a stupid guy", "you stupid guy"]
 
 Client =  commands.Bot(command_prefix='$')
+
+
+
+
+
+def email(receiver_email, message):
+	sender_email  = 'discordTeamWork@gmail.com'
+	password = 'JesusMaimeL666'
+	try:
+		server = smtplib.SMTP('smtp.gmail.com', 587)
+		server.stattls()
+		server.login(sender_email, password)
+		server.sendmail(sender_email, receiver_email, message)
+	except:
+		print("an error")
+	
+
+
+
+
+
+
 
 @Client.event
 async def on_ready():
@@ -35,6 +60,7 @@ async def on_ready():
 @Client.event
 async def on_disconnect():
 	print("Thannos left")
+	await ctx.send("Goodbye friends I'm leaving! I will be back soon")
 
 
 # $repeat command
@@ -46,6 +72,7 @@ async def repeat(ctx, args):
 @Client.command()
 @commands.has_permissions(manage_messages = True)
 async def clear(ctx, number=2):
+	number = number + 1
 	await ctx.channel.purge(limit=number)
 
 # $kick command
@@ -62,7 +89,7 @@ async def list(ctx):
 	for member in members:
 		await ctx.send(str(member.name))
 		
-
+# $totalMembers
 @Client.command()
 async def totalMembers(ctx):
 	n = ctx.guild.member_count
@@ -202,4 +229,103 @@ async def allrules(ctx):
 	await ctx.send(embed=embed)
 
 
-Client.run('NzkwODk0OTk2MDE0MzY2Nzcx.X-HQXQ.hooJ0YP0FLtegB6couCRbU7RMqI')
+# $email command
+@Client.command()
+async def email(ctx, email, *messages):
+	msg = EmailMessage()
+	string =  " "
+	print(messages)
+	
+	for message in messages:
+		string = string + " " + message
+
+	print(string)
+	msg.set_content(str(string))
+	sender_email = 'discordTeamWork@gmail.com'
+	msg['Subject'] = 'Test'
+	msg['From'] = sender_email
+	msg['To'] = str(email)
+	server = smtplib.SMTP('smtp.gmail.com', 587)
+	server.starttls()
+	password = 'JesusMaimeL666'
+	server.login(sender_email, password)
+	server.send_message(msg)
+	embed = discord.Embed(title="Notification", description="Email successfully sent to " + str(email), inline=True, color=0xFF0000)
+	await ctx.send(embed=embed)
+
+
+@Client.command()
+async def emailall(ctx, *words):
+	sender_email = 'discordTeamWork@gmail.com'
+	password = 'JesusMaimeL666'
+	server = smtplib.SMTP('smtp.gmail.com', 587)
+	server.starttls()
+	print(words)
+	listEmail=[]
+	stringMessage = " "
+
+	for email in words:
+		if '@' in email:
+			listEmail.append(email)
+		else:
+			stringMessage = stringMessage + " " + email
+
+	print(stringMessage)
+	print(listEmail)
+	embed = discord.Embed(title="Notification", description="Email(s)  successfully sent", inline=True)
+	
+	for email in listEmail:
+		sender_email = 'discordTeamWork@gmail.com'
+		password = 'JesusMaimeL666'
+		server = smtplib.SMTP('smtp.gmail.com', 587)
+		server.starttls()
+		server.login(sender_email, password)
+		server.sendmail(sender_email, email, stringMessage)
+		print(stringMessage)
+		embed.add_field(name="notification to " + str(email), value="Email sent to " + str(email), inline=True)
+	await ctx.send(embed=embed)
+
+
+'''	
+	msg = EmailMessage()
+	msg.set_content(str(message))
+	sender_email = 'discordTeamWork@gmail.com'
+	msg['Subject'] = 'Test'
+	msg['From'] = sender_email
+	msg['To'] = str(email)
+	server = smtplib.SMTP('smtp.gmail.com', 587)
+	server.starttls()
+	password = 'JesusMaimeL666'
+	server.login(sender_email, password)
+	server.send_message(msg)
+	embed = discord.Embed(title="Notification", description="Email successfully sent to " + str(email), inline=True, color=0xFF0000)
+	await ctx.send(embed=embed)
+
+
+	
+	print(string)
+	slist = string.split(" ")
+	stringEmail =  " "
+	stringMessage = " "
+	embed = discord.Embed(title="Notification", description="Email(s)  successfully  sent", inline=True)
+	print(slist)
+	for word in slist:
+		if '@' in word:
+			stringEmail = word + " " + stringEmail
+		else:
+			stringMessage = stringMessage + " " + word
+
+	elist = stringEmail.split(" ")
+	print(elist)
+	for email in elist:
+		if '@' in email:
+			server = smtplib.SMTP('smtp.gmail.com', 587)
+			server.starttls()
+			password = 'JesusMaimeL666'
+			server.login(sender_email, password)
+			server.sendmail(sender_email, str(email), stringMessage)
+			embed.add_field(name="Email Notification", value="Email sent to " + str(email), inline=True)
+	await ctx.send(embed=embed)
+
+'''
+Client.run('')
