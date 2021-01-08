@@ -1,6 +1,6 @@
 # ThanosChatbot
 
-Thanos is a python chat bot that interacts with users. 
+Thanos is a python discord bot that interacts with users. 
 
 # Tech
 
@@ -20,4 +20,4 @@ on another repository. I will put the link below.
 8. $allrules : Thannos prints all the rules
 9. $server : Thannos prints all the information relative to the server
 10. $hello : Thannos says hello.
-11. $email *email* *message*: Thannos send an email to this person
+11. $email *email* *message*: Thannos send an email to *email* with the message *message*
