@@ -231,7 +231,7 @@ async def allrules(ctx):
 
 # $email command
 @Client.command()
-async def email(ctx, email, *messages):
+async def gmail(ctx, email, *messages):
 	msg = EmailMessage()
 	string =  " "
 	print(messages)
@@ -252,6 +252,26 @@ async def email(ctx, email, *messages):
 	server.send_message(msg)
 	embed = discord.Embed(title="Notification", description="Email successfully sent to " + str(email), inline=True, color=0xFF0000)
 	await ctx.send(embed=embed)
+
+
+
+@Client.command()
+async def comcast (ctx, email, *messages):
+	msg = EmailMessage()
+	string =  " "
+	print(messages)
+	
+	for message in messages:
+		string = string + " " + message
+
+	print(string)
+	msg.set_content(str(string))
+	sender_email = 'discordTeamWork@gmail.com'
+	msg['Subject'] = 'Test'
+	msg['From'] = sender_email
+	msg['To'] = str(email)
+	server = smtplib.SMTP('smtp.mail.yahoo.com', 465)
+	server.startssl()
 
 
 @Client.command()

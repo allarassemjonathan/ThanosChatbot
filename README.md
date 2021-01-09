@@ -8,7 +8,7 @@ Thanos was built using Discord API and sublime text editor. I'm looking forward 
 use the chatbot to do some machine learning project using Tensorflow library but this will be 
 on another repository. I will put the link below.
 
-# Options
+# Commands
 
 1. $play *url*: Thannos starts a voice call and play music with the command
 2. $stop : Thannos stops music with the command 
@@ -20,4 +20,5 @@ on another repository. I will put the link below.
 8. $allrules : Thannos prints all the rules
 9. $server : Thannos prints all the information relative to the server
 10. $hello : Thannos says hello.
-11. $email *email* *message*: Thannos send an email to *email* with the message *message*
+11. $gmail *email* *message*: Thannos send an email to *email* with the message *message* using gmail server
+ 
