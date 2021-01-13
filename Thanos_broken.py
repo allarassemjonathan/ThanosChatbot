@@ -1,8 +1,10 @@
 import youtube_dl
+import wikipedia
 import discord
 import os
 import smtplib
 import email
+import random
 from email.message import EmailMessage
 from discord.ext import commands
 from discord.ext.commands import Cog
@@ -18,50 +20,27 @@ insults_words = ["fuck","dick","f***","d***","pussy","p****","I don't give a"]
 
 bad_words = ["you dumb", "you mean", "you a stupid guy", "you are a stupid guy", "you stupid guy"]
 
+colors_hex = [0xFF0000, 0xFF7F00, 0xFFFF00, 0x00FF00, 0x0000FF, 0x2E2B5F, 0x8B00FF]
+
 Client =  commands.Bot(command_prefix='$')
 
 
-
-
-
-def email(receiver_email, message):
-	sender_email  = 'discordTeamWork@gmail.com'
-	password = 'JesusMaimeL666'
-	try:
-		server = smtplib.SMTP('smtp.gmail.com', 587)
-		server.stattls()
-		server.login(sender_email, password)
-		server.sendmail(sender_email, receiver_email, message)
-	except:
-		print("an error")
-	
-
-
-
-
-
+def rand(arr):
+	return random.choice(arr)
 
 
 @Client.event
 async def on_ready():
 	print("Thannos is ready")
 	channel = Client.get_channel(790897408280100908)
-	await channel.send("I am online")
-
-	embed = discord.Embed(title=" I'm online!", description="Thannos is now online", colour=0xFF0000)
-	fields = [("Name", "Value", True), 
-	("Another field", "Another other field", True),
-	("A non inline field", "This field is on its own raw", True)]
+	embed = discord.Embed(title="Commands", description="Thannos is now online, use these commands and have fun!!", colour=rand(colors_hex))
+	fields = [("Command", "$Value", True), 
+	("Command", "$Value", True),
+	("Command", "$Value", True)]
 	for name, value, inline in fields:
 		embed.add_field(name=name, value=value, inline=inline)
 	await channel.send(embed=embed)
 	
-
-@Client.event
-async def on_disconnect():
-	print("Thannos left")
-	await ctx.send("Goodbye friends I'm leaving! I will be back soon")
-
 
 # $repeat command
 @Client.command()
@@ -254,7 +233,7 @@ async def gmail(ctx, email, *messages):
 	await ctx.send(embed=embed)
 
 
-
+# BROKEN CODE!!!
 @Client.command()
 async def comcast (ctx, email, *messages):
 	msg = EmailMessage()
@@ -273,7 +252,7 @@ async def comcast (ctx, email, *messages):
 	server = smtplib.SMTP('smtp.mail.yahoo.com', 465)
 	server.startssl()
 
-
+# BROKEN CODE!!!
 @Client.command()
 async def emailall(ctx, *words):
 	sender_email = 'discordTeamWork@gmail.com'
@@ -304,6 +283,45 @@ async def emailall(ctx, *words):
 		print(stringMessage)
 		embed.add_field(name="notification to " + str(email), value="Email sent to " + str(email), inline=True)
 	await ctx.send(embed=embed)
+
+
+@Client.command()
+async def wiki (ctx, *query):
+	print(query)
+
+	string = ""
+	
+	for i in query :
+		string = string + " " + i
+
+	print(string)
+
+	embed = discord.Embed(title="Query : " + string, 
+			description="Information taken from Wikipedia", 
+			inline=True, 
+			color=rand(colors_hex))
+	try:
+		page = wikipedia.page(string, auto_suggest=False)
+		images = page.images
+		picture = images[random.randrange(len(images))]
+		print(picture)
+		url = page.url
+		content = page.content[0:1000] + '[...]'
+		embed.set_image(url = picture)
+		embed.add_field(name=string, value=content, inline=True)
+		embed.add_field(name='Link to the page', value=url, inline=True)
+	except:
+		topics = wikipedia.search(string)
+		result = ''
+
+		for topic in topics:
+				result = result  + '🔎 ' + str(topic) + '\n'
+
+		summary = 'Your query is ambigous, see the following options to continue your research. \n' + result
+		embed.add_field(name="Error: Ambiguous query", value=summary, inline=True)
+		
+	await ctx.send(embed=embed) 
+
 
 
 '''	
