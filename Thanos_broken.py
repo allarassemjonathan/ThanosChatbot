@@ -9,9 +9,12 @@ from email.message import EmailMessage
 from discord.ext import commands
 from discord.ext.commands import Cog
 from discord.utils import get
-
+from PIL import Image, ImageFont, ImageDraw
+from io import BytesIO
 intents = discord.Intents.default()
 intents.members = True
+
+''' Important lists and dictionnary'''
 
 rules = ["rule 0: no bad words here!", "rule 1: no stigmatization here!", "rule 2: no ad-hominem here!", 
 		"rule 3: no insult here", "rule 4: all the previous rules are valid and can be subjected to adjustements!"]
@@ -22,7 +25,32 @@ bad_words = ["you dumb", "you mean", "you a stupid guy", "you are a stupid guy",
 
 colors_hex = [0xFF0000, 0xFF7F00, 0xFFFF00, 0x00FF00, 0x0000FF, 0x2E2B5F, 0x8B00FF]
 
+dic_commands = {
+	'play': 'Thannos starts a voice call and play music with the command. To play some music type $play urlmusic',
+	'allrules': 'Print all the rules of the chat (rules can be subject to modifications). To print the rules type $allrules',
+	'ban' : 'Ban a member of the guild. Command available only to the owner. To ban someone type $ban username',
+	'clear': 'Clear some message of the chat. Command available only to the owner. To clear type $clear followed by the number of message you want to erase',
+	'gmail' : 'Thannos send an email with a message using gmail server. To send an email type $gmail user@gmail.com message',
+	'hello': 'Thannos say hello. Type $hello and Thannos will answer you',
+	'server' : 'Thannos prints all the information relative to the server. Type $server to access this information',
+	'wiki' : 'Thannos will search on Wikipedia a page with the query provided. If Thannos doesnt find one, he will suggest a list of existing pages that may match the query. To search the page of someone type $wiki followed by the  title of thepage',
+	'DM' : 'Thannos will send a message with the words message to the user member (providing also the name of the author of the request). To DM type $DM username message',
+	'rule' : 'Thannos prints the rule that you are asking to view. To do that type $rule followed by the number of the rule',
+	'stop' : 'Thannos stops the music. To do that type $stop after starting the music',
+	'leave' : 'Thannos leaves the voice call. To do that type $leave after starting the music',
+	'pause' : 'Thannos stops the music. To do that type $pause after starting the music',
+	'repeat': 'Thannos repeats what you said after $repeat. To do that type $repeat followed by the word you want the bot to repeat',
+	'resume': 'Thannos resumes the music. To do that type $resume',
+	'wanted': 'Thannos will make a wanted poster with the photo of the user wanted!'
+}
+
+
+
+
+'''Commands'''
+
 Client =  commands.Bot(command_prefix='$')
+
 
 
 def rand(arr):
@@ -33,12 +61,18 @@ def rand(arr):
 async def on_ready():
 	print("Thannos is ready")
 	channel = Client.get_channel(790897408280100908)
-	embed = discord.Embed(title="Commands", description="Thannos is now online, use these commands and have fun!!", colour=rand(colors_hex))
-	fields = [("Command", "$Value", True), 
-	("Command", "$Value", True),
-	("Command", "$Value", True)]
-	for name, value, inline in fields:
-		embed.add_field(name=name, value=value, inline=inline)
+	file = open("commands.txt")
+	string = file.read()
+	file.close()
+
+	embed = discord.Embed(
+		title="Hi guys!",
+		description="My name is Thannos, I'm a discord bot built by Jonathan Allarassem. "
+			+"I provide simple services like sending emails "
+			+ "or reading a wikipedia page.",
+		color=rand(colors_hex),
+		inline=True)
+	embed.add_field(name='Below are some interesting commands! Feel free to test one!', value=string)
 	await channel.send(embed=embed)
 	
 
@@ -82,10 +116,58 @@ async def ban(ctx, member : discord.Member,*,reason = "No reason provided"):
 	await member.send("you have been kicked from the coding community")
 	await member.ban(reason=reason)
 
+
+@Client.command()
+async def DM (ctx, member : discord.Member, *messages):
+	string = ''
+	for message in messages:
+		string = string + ' ' + str(message)
+	await member.send(string)
+
+@Client.command()
+async def commands(ctx):
+	file = open("commands.txt")
+	string = file.read()
+	file.close()
+
+	embed = discord.Embed(
+		title="Commands\nDescription of the bot",
+		description="Thanos is a python discord bot built by Jonathan Allarassem "
+			+"that interacts with users and provide simple services like sending emails "
+			+ "or reading a wikipedia page.",
+		color=rand(colors_hex),
+		inline=True)
+	embed.add_field(name='List of commands', value=string)
+	await ctx.send(embed=embed)
+
+
+@Client.command()
+async def infobot(ctx):
+	embed = discord.Embed(title='Description', 
+		description="Thanos is a python discord bot built by Jonathan Allarassem "
+			+"that interacts with users and provide simple services like sending emails "
+			+ 'or reading a wikipedia page. See the github repository for more infotmation',
+		inline=True, color=rand(colors_hex))
+	embed.add_field(name='Github Link', value='https://github.com/allarassemjonathan/ThanosChatbot', 
+		inline=True)
+	await ctx.send(embed=embed)
+
+
 # $hello command
 @Client.command()
 async def hello(ctx):
 	await ctx.send('Hello')
+
+
+@Client.command()
+async def Help(ctx, command):
+	string = dic_commands[command]
+	embed = discord.Embed(title='Help ' + str(command), 
+		description='help for the command ' + str(command), 
+		inline=True, 
+		color=rand(colors_hex))
+	embed.add_field(name='$' + command, value=string, inline=True)
+	await ctx.send(embed=embed)
 
 # $server command
 @Client.command()
@@ -109,9 +191,84 @@ async def server(ctx):
 	embed.add_field(name='Member Count', value=memberCount, inline=True)
 	await ctx.send(embed=embed)
 
+@Client.command()
+async def wanted (ctx, user: discord.Member):
+
+	if user==None:
+		user = ctx.author
+	
+	background = Image.open('wanted_500.png')
+	asset = user.avatar_url_as(size = 256)
+	data = BytesIO(await asset.read())
+	photo = Image.open(data)
+
+	
+
+	background.paste(photo, (120,144))
+
+	background.save('wanted_photo.png')
+
+	await ctx.send(file=discord.File('wanted_photo.png'))
+
+
+@Client.command()
+async def write (ctx, color, *text):
+	sentences = ''
+	for word in text:
+		sentences = sentences + ' ' + word
+
+	background = Image.new('RGB', (500,500), str(color))
+	font = ImageFont.truetype('BelieveIt-DvLE.ttf', 24)
+	draw = ImageDraw.Draw(background)
+	draw.text((166,254), sentences, (0,0,0))
+
+	background.save('text.png')
+	await ctx.send(file=discord.File('text.png'))
+
 '''
 THE FOLLOWING RULES ARE FOR THE MANAGEMENT OF MUSIC LISTENNING
 '''
+@Client.command()
+async def bible (ctx, version, *passage):
+	url_temp = 'https://www.biblegateway.com/passage/?search='
+	version_temp = '&version='
+	number = ['1','2','3','4','5','6','7','8','9']
+
+	string = ''
+	for word in passage:
+		string  = string + word
+
+	verse_numb = list(())
+	book = ''
+	for e in string:
+		if e in number:
+			verse_numb.append(e)
+		else:
+			book = book + e
+
+	book = book.capitalize()
+
+	
+	cite = ''
+	for i in verse_numb:
+			cite = cite + i
+	url = url_temp + book + cite+ version_temp + version
+
+	embed = discord.Embed(title="Bible citation", 
+		description='we want to quote the bible using a simple command',
+		color=0xffffff )
+
+	embed.add_field(name=string, value=url, inline=True)
+
+	await ctx.send(embed=embed)
+
+
+
+
+
+
+
+
 
 # $play command
 @Client.command()
