@@ -20,4 +20,6 @@ Thanos was built using Discord API and sublime text editor.
 10. $hello : Thannos says hello.
 11. $gmail *email* *message*: Thannos send an email to *email* with the message *message* using gmail server
 12. $wiki *query* : Thannos will search on Wikipedia a page with the query provided. If Thannos doesn't find one, he will suggest a list of existing pages that may match the query
+13. $write *color* *message*: Thannos will write message at the center of a white image.
+14. $wanted *name* : Thannos will make a poster with your face and a reward for the person that find you.
  
